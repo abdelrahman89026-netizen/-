@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KhotwaAIDatabaseSchema",
+  "description": "Firestore schema for Khotwa AI (خُطوة) assistant journeys, documents, and user profile data",
+  "entities": {
+    "User": {
+      "path": "users/{userId}",
+      "type": "document",
+      "properties": {
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "language": { "type": "string" },
+        "theme": { "type": "string" },
+        "createdAt": { "type": "timestamp" },
+        "updatedAt": { "type": "timestamp" }
+      },
+      "required": ["userId", "createdAt"]
+    },
+    "Journey": {
+      "path": "users/{userId}/journeys/{journeyId}",
+      "type": "document",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "status": { "type": "string" },
+        "progress": { "type": "integer" },
+        "stepsJson": { "type": "string" },
+        "documentsJson": { "type": "string" },
+        "officialSourcesJson": { "type": "string" },
+        "deadlinesJson": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "timestamp" },
+        "updatedAt": { "type": "timestamp" }
+      },
+      "required": ["id", "userId", "title", "status", "progress", "createdAt"]
+    },
+    "DocumentItem": {
+      "path": "users/{userId}/documents/{documentId}",
+      "type": "document",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "fileName": { "type": "string" },
+        "fileType": { "type": "string" },
+        "summary": { "type": "string" },
+        "extractedRequirementsJson": { "type": "string" },
+        "extractedDatesJson": { "type": "string" },
+        "createdAt": { "type": "timestamp" },
+        "updatedAt": { "type": "timestamp" }
+      },
+      "required": ["id", "userId", "fileName", "summary", "createdAt"]
+    }
+  }
+}

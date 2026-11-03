@@ -1,0 +1,6 @@
+{
+  "name": "خُطوة AI",
+  "description": "مساعد ذكي لإنجاز الخدمات والإجراءات والمستندات بخطوات واضحة وموثوقة",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function hasValidTimestamps() {
+      return request.resource.data.createdAt is timestamp &&
+             (request.method == 'create' || request.resource.data.updatedAt is timestamp);
+    }
+
+    function isValidUser(userId) {
+      let data = request.resource.data;
+      return data.userId == userId &&
+             data.userId is string &&
+             data.userId.size() > 0 &&
+             hasValidTimestamps();
+    }
+
+    function isValidJourney(userId) {
+      let data = request.resource.data;
+      return data.userId == userId &&
+             data.id is string &&
+             data.id.size() > 0 &&
+             data.title is string &&
+             data.title.size() > 0 &&
+             data.status is string &&
+             data.progress is int &&
+             data.progress >= 0 &&
+             data.progress <= 100 &&
+             hasValidTimestamps();
+    }
+
+    function isValidDocumentItem(userId) {
+      let data = request.resource.data;
+      return data.userId == userId &&
+             data.id is string &&
+             data.id.size() > 0 &&
+             data.fileName is string &&
+             data.summary is string &&
+             hasValidTimestamps();
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create, update: if isOwner(userId) && isValidUser(userId);
+      allow delete: if isOwner(userId);
+
+      match /journeys/{journeyId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidJourney(userId);
+        allow delete: if isOwner(userId);
+      }
+
+      match /documents/{documentId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId) && isValidDocumentItem(userId);
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}
